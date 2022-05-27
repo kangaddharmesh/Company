@@ -26,12 +26,15 @@ namespace FileUploadProject
                     {
                         using (BinaryReader br = new BinaryReader(fs))
                         {
+                            string contentType = uploadedFile.ContentType;
                             byte[] bytes = br.ReadBytes((Int32)fs.Length);
                             SqlConnection con = new SqlConnection(conStr);
                             SqlCommand cmd = new SqlCommand("insertCompanyAndFileMaster", con);
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@fileName", Path.GetFileNameWithoutExtension(uploadedFile.FileName) );
+                            cmd.Parameters.AddWithValue("@fileNameWithExtension", uploadedFile.FileName);
                             cmd.Parameters.AddWithValue("@File", bytes);
+                            cmd.Parameters.AddWithValue("@FileContentType", contentType);
 
                             con.Open();
                             cmd.ExecuteNonQuery();
